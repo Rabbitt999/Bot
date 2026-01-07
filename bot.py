@@ -1,20 +1,22 @@
-import telebot
+import asyncio
+from aiogram import Bot, Dispatcher, types
+from aiogram.filters import Command
 
-# Замените 'ВАШ_ТОКЕН' на токен, полученный от BotFather
-TOKEN = '8067473611:AAHaIRuXuCF_SCkiGkg-gfHf2zKPOkT_V9g'
-bot = telebot.TeleBot(TOKEN)
+TOKEN = "8067473611:AAHaIRuXuCF_SCkiGkg-gfHf2zKPOkT_V9g"
 
-# Обработчик команды /start
-@bot.message_handler(commands=['start'])
-def send_welcome(message):
-    bot.reply_to(message, "Привет! Я простой телеграм-бот. Что я могу для тебя сделать?")
+bot = Bot(token=TOKEN)
+dp = Dispatcher()
 
-# Обработчик текстовых сообщений
-@bot.message_handler(func=lambda message: True)
-def echo_all(message):
-    bot.reply_to(message, f"Ты написал: {message.text}")
+@dp.message(Command("start"))
+async def start(message: types.Message):
+    await message.answer("👋 Привіт! Я простий Telegram-бот.")
 
-# Запуск бота
-if __name__ == '__main__':
-    print("Бот запущен...")
-    bot.polling(none_stop=True) # Запускает бота в режиме "Long Poll"
+@dp.message()
+async def echo(message: types.Message):
+    await message.answer(f"Ти написав: {message.text}")
+
+async def main():
+    await dp.start_polling(bot)
+
+if __name__ == "__main__":
+    asyncio.run(main())
